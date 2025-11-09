@@ -1,2 +1,2 @@
 # downloads-auto-organizer
-organize files in downloads folder based on file extension
+organize downloaded files by sending them to correct directory based on file extension
