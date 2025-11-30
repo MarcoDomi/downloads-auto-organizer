@@ -4,7 +4,7 @@ import shutil
 import sys
 from pathlib import Path
 
-HOME_DIR = Path.home()
+DOWNLOAD_DIR = Path.home() / "downloads"
 
 '''def get_init_dir(): #NOTE i forgot why i added this :(
     if len(sys.argv) > 1 and sys.argv[1] == 'cwd': #set INIT_DIR to the current working directory
@@ -32,8 +32,7 @@ def move_file(file):
 def scan_downloads():
     '''scan download directory for files'''
 
-    download_dir = HOME_DIR.joinpath('downloads')
-    for f in download_dir.iterdir():
+    for f in DOWNLOAD_DIR.iterdir():
         move_file(f)
 
 
