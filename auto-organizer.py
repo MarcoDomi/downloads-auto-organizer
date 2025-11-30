@@ -18,11 +18,15 @@ HOME_DIR = Path.home()
 def move_file(file): 
     #values as sets allow for efficient membership testing
     valid_extensions = {
-        'documents': set('.txt', '.pdf', '.docx'),
-        'archives': set('.zip', '.tar.gz'),
-        'videos': set('.mp4', '.mkv', '.mov'),
-        'images': set('.jpg', '.jpeg', '.png', '.gif')
+        'documents': {'.txt', '.pdf', '.docx'},
+        'archives': {'.zip', '.tar.gz'},
+        'videos': {'.mp4', '.mkv', '.mov'},
+        'images': {'.jpg', '.jpeg', '.png', '.gif'}
     }
+
+    for file_type, file_ext in valid_extensions.items():
+        if file.suffix in file_ext:
+            print(file_type)
 
 
 def scan_downloads():
@@ -36,5 +40,6 @@ def scan_downloads():
 def main():
     #INIT_DIR = get_init_dir()
     scan_downloads()
+
 
 main()
