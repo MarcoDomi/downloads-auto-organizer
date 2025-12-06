@@ -14,11 +14,11 @@ DOWNLOAD_DIR = Path.home() / "downloads"
 
     return INIT_DIR'''
 
-def create_path(path):
+def create_path(dir_path):
     try:
-        path.mkdir()
+        dir_path.mkdir()
     except FileExistsError:
-        print(f"Directory {path} already exists")
+        print(f"Directory {dir_path} already exists")
 
 
 def move_file(file): 
@@ -38,15 +38,9 @@ def move_file(file):
             shutil.move(file, type_path)
 
 
-def scan_downloads():
-    '''scan download directory for files'''
-
+def main():
     for f in DOWNLOAD_DIR.iterdir():
         move_file(f)
-
-
-def main():
-    scan_downloads()
 
 
 main()
