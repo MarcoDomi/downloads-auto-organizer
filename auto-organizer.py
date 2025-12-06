@@ -27,14 +27,15 @@ def move_file(file):
         'documents': {'.txt', '.pdf', '.docx'},
         'archives': {'.zip', '.tar.gz'},
         'videos': {'.mp4', '.mkv', '.mov'},
-        'images': {'.jpg', '.jpeg', '.png', '.gif'}
+        'images': {'.jpg', '.jpeg', '.png', '.gif'},
+        'audio' : {'.mp3'}
     }
 
     for file_type, f_extension in valid_extensions.items():
         type_path = DOWNLOAD_DIR.joinpath(file_type)
         if file.suffix in f_extension:
             create_path(type_path)
-            
+            shutil.move(file, type_path)
 
 
 def scan_downloads():
@@ -45,7 +46,6 @@ def scan_downloads():
 
 
 def main():
-    #INIT_DIR = get_init_dir()
     scan_downloads()
 
 
