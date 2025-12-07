@@ -34,13 +34,11 @@ def create_dir(dir_path):
 
 def get_file_suffix(file_path):
     '''return extension of a file'''
+    #some files will have 2 dots(.) so using .suffix will not work in those cases
     file_name = file_path.name
+    index =  file_name.find('.')
 
-    if file_name.count('.') > 1:
-        index =  file_name.find('.')
-        return file_name[index:]
-    else:
-        return file_path.suffix
+    return file_name[index:]
 
 
 def move_file(file): 
