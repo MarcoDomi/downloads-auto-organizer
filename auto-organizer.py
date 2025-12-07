@@ -24,20 +24,34 @@ valid_extensions = {
     return INIT_DIR'''
 
 
-def create_path(dir_path):
+def create_dir(dir_path):
+    '''creates a directory'''
     try:
         dir_path.mkdir()
     except FileExistsError:
         print(f"Directory {dir_path} already exists")
 
 
-def move_file(file): 
+def get_file_suffix(file_path):
+    '''return extension of a file'''
+    file_name = file_path.name
 
+    if file_name.count('.') > 1:
+        index =  file_name.find('.')
+        return file_name[index:]
+    else:
+        return file_path.suffix
+
+
+def move_file(file): 
+    '''move file from parent dir to new dir based on file type'''
     for file_type, f_extension in valid_extensions.items():
-        type_path = DOWNLOAD_DIR.joinpath(file_type)
-        if file.suffix in f_extension:
-            create_path(type_path)
-            shutil.move(file, type_path)
+        type_path = DOWNLOAD_DIR.joinpath(file_type) #create path for new file type directory
+        file_suffix = get_file_suffix(file)
+
+        if file_suffix in f_extension:
+            create_dir(type_path) #create new file type directory
+            shutil.move(file, type_path) 
 
 
 def main():

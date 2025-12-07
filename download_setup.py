@@ -14,6 +14,7 @@ def clear_dir(parent_dir):
 for f in Path.iterdir(download_dir):
     if f.is_dir():
         clear_dir(f)
+        f.rmdir()
 
 for f in files:
     file_path = download_dir / f
