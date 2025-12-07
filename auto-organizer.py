@@ -34,7 +34,7 @@ def create_dir(dir_path):
 
 def get_file_suffix(file_path):
     '''return extension of a file'''
-    #some files will have 2 dots(.) so using .suffix will not work in those cases
+    #some file extensions will have 2 dots(.) so using .suffix attribute will not work in those cases
     file_name = file_path.name
     index =  file_name.find('.')
 
@@ -44,10 +44,10 @@ def get_file_suffix(file_path):
 def move_file(file): 
     '''move file from parent dir to new dir based on file type'''
     for file_type, f_extension in valid_extensions.items():
-        type_path = DOWNLOAD_DIR.joinpath(file_type) #create path for new file type directory
         file_suffix = get_file_suffix(file)
 
         if file_suffix in f_extension:
+            type_path = DOWNLOAD_DIR.joinpath(file_type) #create path object for new file type directory
             create_dir(type_path) #create new file type directory
             shutil.move(file, type_path) 
 
