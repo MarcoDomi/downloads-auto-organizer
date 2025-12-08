@@ -1,7 +1,7 @@
 #! /usr/bin/python3
 
 import shutil
-import sys
+import datetime
 from pathlib import Path
 
 DOWNLOAD_DIR = Path.home() / "downloads"
@@ -14,6 +14,27 @@ valid_extensions = {
     'images': {'.jpg', '.jpeg', '.png', '.gif'},
     'audio' : {'.mp3'}
 }
+
+class log_manager:
+    def __init__(self):
+        self.log_file = 'file_move_log.txt'
+        self.curr_date = datetime.date.today()
+
+    def write(self,file_name, dir):
+        with open(self.log_file, 'a') as f:
+            f.write(f"{file_name} moved to {dir} at {self.curr_date}\n")
+
+    def print_log(self):
+        log_list = []
+        with open(self.log_file) as f:
+            for line in f:
+                log_list.append(line)
+        
+        print("".join(log_list))
+
+    def _convert_timestamp(self):
+        pass
+        
 
 '''def get_init_dir(): #NOTE i forgot why i added this :(
     if len(sys.argv) > 1 and sys.argv[1] == 'cwd': #set INIT_DIR to the current working directory
@@ -57,4 +78,7 @@ def main():
         move_file(f)
 
 
-main()
+#main()
+
+lm = log_manager()
+lm.write('monkey.txt', 'tree')
