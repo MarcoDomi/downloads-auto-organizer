@@ -23,7 +23,7 @@ class log_manager:
 
     def write(self,file_path:Path):
         print(file_path)
-
+        
         file_name = file_path.name
         with open(self.log_file, 'a') as f:
             move_time = os.stat(file_path).st_ctime #time file was moved
@@ -63,10 +63,6 @@ def get_file_suffix(file_path):
     return file_name[index:]
 
 
-def udpate_file_path(file_path, new_dir):
-    print(file_path)
-
-
 def move_file(file): 
     '''move file from parent dir to new dir based on file type'''
     for file_type, f_extension in valid_extensions.items():
@@ -76,7 +72,7 @@ def move_file(file):
             type_path = DOWNLOAD_DIR.joinpath(file_type) #create path object for new file type directory
             create_dir(type_path) #create new directory using the file type
             shutil.move(file, type_path) 
-            logger.write(file)
+            logger.write(type_path / file.name) #send updated file path to log_manager write method
 
 
 def main():
