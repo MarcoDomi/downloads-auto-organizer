@@ -63,6 +63,10 @@ def get_file_suffix(file_path):
     return file_name[index:]
 
 
+def udpate_file_path(file_path, new_dir):
+    print(file_path)
+
+
 def move_file(file): 
     '''move file from parent dir to new dir based on file type'''
     for file_type, f_extension in valid_extensions.items():
@@ -70,7 +74,7 @@ def move_file(file):
 
         if file_suffix in f_extension:
             type_path = DOWNLOAD_DIR.joinpath(file_type) #create path object for new file type directory
-            create_dir(type_path) #create new file type directory
+            create_dir(type_path) #create new directory using the file type
             shutil.move(file, type_path) 
             logger.write(file)
 
@@ -80,4 +84,5 @@ def main():
         move_file(f)
 
 
-main()
+if __name__ == "__main__":
+    main()
