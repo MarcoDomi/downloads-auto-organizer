@@ -2,6 +2,7 @@
 
 import shutil
 import datetime
+import os
 from pathlib import Path
 
 DOWNLOAD_DIR = Path.home() / "downloads"
@@ -20,9 +21,14 @@ class log_manager:
         self.log_file = 'file_move_log.txt'
         self.curr_date = datetime.date.today()
 
-    def write(self,file_name, dir):
+    def write(self,file_path:Path):
+        print(file_path)
+
+        file_name = file_path.name
         with open(self.log_file, 'a') as f:
-            f.write(f"{file_name} moved to {dir} at {self.curr_date}\n")
+            move_time = os.stat(file_path).st_ctime #time file was moved
+            f.write(f"{file_name} moved to {DOWNLOAD_DIR} at {self.curr_date}-{move_time}\n")
+        #NOTE i may need to pass the entire path of the file to write method so i can use os.stat and get metadata timestampe
 
     def print_log(self):
         log_list = []
@@ -32,17 +38,12 @@ class log_manager:
         
         print("".join(log_list))
 
-    def _convert_timestamp(self):
+    def _convert_timestamp(self, f_ctime):
+        '''convert 24 hour datetime obj to a 12 hour datetime obj'''
         pass
-        
 
-'''def get_init_dir(): #NOTE i forgot why i added this :(
-    if len(sys.argv) > 1 and sys.argv[1] == 'cwd': #set INIT_DIR to the current working directory
-        INIT_DIR = Path.cwd()
-    else:
-        INIT_DIR = HOME_DIR #path where the download files will be moved to.
 
-    return INIT_DIR'''
+logger = log_manager()
 
 
 def create_dir(dir_path):
@@ -71,6 +72,7 @@ def move_file(file):
             type_path = DOWNLOAD_DIR.joinpath(file_type) #create path object for new file type directory
             create_dir(type_path) #create new file type directory
             shutil.move(file, type_path) 
+            logger.write(file)
 
 
 def main():
@@ -78,7 +80,4 @@ def main():
         move_file(f)
 
 
-#main()
-
-lm = log_manager()
-lm.write('monkey.txt', 'tree')
+main()
