@@ -17,6 +17,7 @@ valid_extensions = {
 }
 
 class log_manager:
+    '''manages a log file to track the date-time files were moved'''
     def __init__(self):
         self.log_file = 'file_move_log.txt'
         self.curr_date = datetime.date.today()
@@ -25,22 +26,21 @@ class log_manager:
         print(file_path)
         
         file_name = file_path.name
+        file_parent = file_path.parent
         with open(self.log_file, 'a') as f:
-            move_time = os.stat(file_path).st_ctime #time file was moved
-            f.write(f"{file_name} moved to {DOWNLOAD_DIR} at {self.curr_date}-{move_time}\n")
-        #NOTE i may need to pass the entire path of the file to write method so i can use os.stat and get metadata timestampe
+            move_timestamp = os.stat(file_path).st_ctime #timestamp of when the file was moved to different directory
+            move_datetime = datetime.datetime.fromtimestamp(move_timestamp) #convert timestamp to human readable format
+        
+            f.write(f"{file_name} moved to {file_parent} at {move_datetime.date()} -- {move_datetime.time().strftime('%I:%M %p')}\n") #convert timestamp time to 12-hour format
 
     def print_log(self):
+        '''print log file to console'''
         log_list = []
         with open(self.log_file) as f:
             for line in f:
                 log_list.append(line)
         
         print("".join(log_list))
-
-    def _convert_timestamp(self, f_ctime):
-        '''convert 24 hour datetime obj to a 12 hour datetime obj'''
-        pass
 
 
 logger = log_manager()
@@ -56,7 +56,7 @@ def create_dir(dir_path):
 
 def get_file_suffix(file_path):
     '''return extension of a file'''
-    #some file extensions will have 2 dots(.) so using .suffix attribute will not work in those cases
+    #some file extensions will have 2 dots(example.tar.gz) so using .suffix attribute will not work in those cases
     file_name = file_path.name
     index =  file_name.find('.')
 
@@ -82,3 +82,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    logger.print_log()
