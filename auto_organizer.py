@@ -22,17 +22,14 @@ class log_manager:
         self.log_file = 'file_move_log.txt'
         self.curr_date = datetime.date.today()
 
+
     def write(self,file_path:Path):
         '''write to file_move_log.txt when a file was moved to a different directory'''
+        new_log = self._create_log(file_path)
 
         with open(self.log_file, 'a') as f:
+            f.write(new_log) 
 
-            move_date, move_time = self._get_file_datetime(file_path)
-
-            file_name = file_path.name
-            file_parent = file_path.parent.name
-
-            f.write(f"{file_name} moved to {file_parent} at {move_date} -- {move_time}\n") #convert timestamp time to 12-hour format
 
     def print_log(self):
         '''print log file to console'''
@@ -43,15 +40,25 @@ class log_manager:
 
         print("".join(log_list))
 
+
     def _get_file_datetime(self, file_path):
         '''get a human readable date and time of the last metadata change for a file in a 12-hour format'''
         metadata_timeStamp = os.stat(file_path).st_ctime #timestamp of when the file was moved to different directory
         move_datetime = datetime.datetime.fromtimestamp(metadata_timeStamp) #convert timestamp to human readable format
 
         move_date = move_datetime.date() 
-        move_time12hr = move_datetime.time().strftime("%I:%M %p") #12 hour format time
+        move_time12hr = move_datetime.time().strftime("%I:%M %p") #convert time to 12 hour format 
 
         return move_date, move_time12hr
+    
+
+    def _create_log(self, file_path:Path):
+        '''creates a new log using the file path'''
+        move_date, move_time = self._get_file_datetime(file_path)
+        file_name = file_path.name
+        file_parent = file_path.parent.name
+
+        return f"{file_name} moved to {file_parent} at {move_date} -- {move_time}\n"
 
 
 logger = log_manager()
