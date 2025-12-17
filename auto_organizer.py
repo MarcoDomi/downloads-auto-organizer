@@ -7,7 +7,7 @@ from pathlib import Path
 
 DOWNLOAD_DIR = Path.home() / "downloads"
 
- # values as sets allow for efficient membership testing
+# values as sets allow for efficient membership testing
 valid_extensions = {
     'documents': {'.txt', '.pdf', '.docx'},
     'archives': {'.zip', '.tar.gz'},
@@ -23,15 +23,16 @@ class log_manager:
         self.curr_date = datetime.date.today()
 
     def write(self,file_path:Path):
-        print(file_path)
-        
-        file_name = file_path.name
-        file_parent = file_path.parent
+        '''write to file_move_log.txt when a file was moved to a different directory'''
+
         with open(self.log_file, 'a') as f:
-            move_timestamp = os.stat(file_path).st_ctime #timestamp of when the file was moved to different directory
-            move_datetime = datetime.datetime.fromtimestamp(move_timestamp) #convert timestamp to human readable format
-        
-            f.write(f"{file_name} moved to {file_parent} at {move_datetime.date()} -- {move_datetime.time().strftime('%I:%M %p')}\n") #convert timestamp time to 12-hour format
+
+            move_date, move_time = self._get_file_datetime(file_path)
+
+            file_name = file_path.name
+            file_parent = file_path.parent.name
+
+            f.write(f"{file_name} moved to {file_parent} at {move_date} -- {move_time}\n") #convert timestamp time to 12-hour format
 
     def print_log(self):
         '''print log file to console'''
@@ -39,8 +40,18 @@ class log_manager:
         with open(self.log_file) as f:
             for line in f:
                 log_list.append(line)
-        
+
         print("".join(log_list))
+
+    def _get_file_datetime(self, file_path):
+        '''get a human readable date and time of the last metadata change for a file in a 12-hour format'''
+        metadata_timeStamp = os.stat(file_path).st_ctime #timestamp of when the file was moved to different directory
+        move_datetime = datetime.datetime.fromtimestamp(metadata_timeStamp) #convert timestamp to human readable format
+
+        move_date = move_datetime.date() 
+        move_time12hr = move_datetime.time().strftime("%I:%M %p") #12 hour format time
+
+        return move_date, move_time12hr
 
 
 logger = log_manager()
