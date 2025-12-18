@@ -34,12 +34,11 @@ class log_manager:
 
     def print_log(self):
         '''print log file to console'''
-        log_list = []
+        
         with open(self.log_file) as f:
-            for line in f:
-                log_list.append(line)
-
-        print("".join(log_list))
+            record_list = f.readlines()
+        
+        print(*record_list, sep='') #default value of sep adds an extra space before each record so i removed this
 
 
     def _get_file_datetime(self, file_path):
