@@ -22,7 +22,6 @@ class log_manager:
         self.log_file = 'file_move_log.txt'
         self.curr_date = datetime.date.today()
 
-
     def write(self,file_path:Path):
         '''write to file_move_log.txt when a file was moved to a different directory'''
         new_log = self._create_log(file_path)
@@ -31,15 +30,13 @@ class log_manager:
         with open(self.log_file, 'w') as f:
             f.write(new_log_list) 
 
-
     def print_log(self):
         '''print log file to console'''
-        
+
         with open(self.log_file) as f:
             record_list = f.readlines()
-        
-        print(*record_list, sep='') #default value of sep adds an extra space before each record so i removed this
 
+        print(*record_list, sep='') #default value of sep adds an extra space before each record so i removed this
 
     def _get_file_datetime(self, file_path):
         '''get a human readable date and time of the last metadata change for a file in a 12-hour format'''
@@ -51,15 +48,13 @@ class log_manager:
 
         return move_date, move_time12hr
 
-
     def _create_log(self, file_path:Path):
         '''creates a new log using the file path'''
         move_date, move_time = self._get_file_datetime(file_path)
         file_name = file_path.name
         file_parent = file_path.parent.name
 
-        return f"{file_name} moved to {file_parent} at {move_date} -- {move_time}\n"
-
+        return f"[{move_date} -- {move_time}] {file_name} moved to {file_parent}\n"
 
     def _create_write_list(self, new_log:str):
         '''create a string of logs in correct order to write to log file'''
@@ -68,7 +63,6 @@ class log_manager:
 
         new_log_list = [new_log] #extend method modifies list in place so must store new log in its own variable
         new_log_list.extend(file_logs)
-
 
         return "".join(new_log_list)
 
