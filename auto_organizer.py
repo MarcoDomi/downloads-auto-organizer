@@ -26,9 +26,10 @@ class log_manager:
     def write(self,file_path:Path):
         '''write to file_move_log.txt when a file was moved to a different directory'''
         new_log = self._create_log(file_path)
+        new_log_list = self._create_write_list(new_log)
 
-        with open(self.log_file, 'a') as f:
-            f.write(new_log) 
+        with open(self.log_file, 'w') as f:
+            f.write(new_log_list) 
 
 
     def print_log(self):
@@ -50,7 +51,7 @@ class log_manager:
         move_time12hr = move_datetime.time().strftime("%I:%M %p") #convert time to 12 hour format 
 
         return move_date, move_time12hr
-    
+
 
     def _create_log(self, file_path:Path):
         '''creates a new log using the file path'''
@@ -59,6 +60,18 @@ class log_manager:
         file_parent = file_path.parent.name
 
         return f"{file_name} moved to {file_parent} at {move_date} -- {move_time}\n"
+
+
+    def _create_write_list(self, new_log:str):
+        '''create a string of logs in correct order to write to log file'''
+        with open(self.log_file, 'r') as f:
+            file_logs = f.readlines()
+
+        new_log_list = [new_log] #extend method modifies list in place so must store new log in its own variable
+        new_log_list.extend(file_logs)
+
+
+        return "".join(new_log_list)
 
 
 logger = log_manager()
