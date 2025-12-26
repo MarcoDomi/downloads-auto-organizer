@@ -38,6 +38,25 @@ class log_manager:
 
         print(*record_list, sep='') #default value of sep adds an extra space before each record so i removed this
 
+    def delete_old_records(self):
+        '''deletes records from file if 30 days old'''
+        with open(self.log_file) as f:
+            record_list = f.readlines()
+
+        #NOTE by checking most recent records first you can stop searching when you find a 30 day old record and remove all records past that 
+        for i in range(len(record_list)):
+            date, time = self._extract_date_time(record_list[i])
+            
+        
+    def _extract_date_time(self,record):
+        date_time = record.split('] ')[0] #obtain date-time portion of the record 
+        date_time = date_time[1:] #remove '[' from start of date_time
+        date_time = date_time.split('--')
+
+        date, time = date_time
+
+        return date, time
+    
     def _get_file_datetime(self, file_path):
         '''get a human readable date and time of the last metadata change for a file in a 12-hour format'''
         metadata_timeStamp = os.stat(file_path).st_ctime #timestamp of when the file was moved to different directory
@@ -54,10 +73,10 @@ class log_manager:
         file_name = file_path.name
         file_parent = file_path.parent.name
 
-        return f"[{move_date} -- {move_time}] {file_name} moved to {file_parent}\n"
+        return f"[{move_date}--{move_time}] {file_name} moved to {file_parent}\n"
 
     def _create_write_list(self, new_log:str):
-        '''create a string of logs in correct order to write to log file'''
+        '''create a string of logs order of most recent to oldest'''
         with open(self.log_file, 'r') as f:
             file_logs = f.readlines()
 
