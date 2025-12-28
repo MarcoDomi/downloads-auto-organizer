@@ -49,8 +49,8 @@ class log_manager:
         dt_now = datetime.datetime.now()
         #NOTE by checking most recent records first you can stop searching when you find a 30 day old record and remove all records past that 
         for i in range(len(record_list)):
-            dt_record = self._extract_date_time(record_list[i])
-            if (dt_now - dt_record).days >= 30:
+            dt_move = self._extract_date_time(record_list[i]) #datetime of when the file was moved
+            if (dt_now - dt_move).days >= 30: 
                 record_list = record_list[:i] #remove current record and all records after current from list
                 break
 
