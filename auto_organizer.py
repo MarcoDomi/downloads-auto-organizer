@@ -42,7 +42,7 @@ class log_manager:
 
 
     def delete_old_records(self):
-        '''deletes records from file if 30 days old'''
+        '''deletes all records from file they are at least 30 days old'''
         with open(self.log_file) as f:
             record_list = f.readlines()
 
@@ -134,6 +134,7 @@ def move_file(file):
 
 
 def main():
+    logger.delete_old_records()
     for f in DOWNLOAD_DIR.iterdir():
         move_file(f)
 
