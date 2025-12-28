@@ -26,7 +26,7 @@ class log_manager:
     def write(self,file_path:Path):
         '''write to file_move_log.txt when a file was moved to a different directory'''
         new_log = self._create_log(file_path)
-        new_log_list = self._create_write_list(new_log)
+        new_log_list = self._prepend_new_log(new_log)
 
         with open(self.log_file, 'w') as f:
             f.write(new_log_list) 
@@ -86,8 +86,8 @@ class log_manager:
         return f"[{move_date}--{move_time}] {file_name} moved to {file_parent}\n"
 
 
-    def _create_write_list(self, new_log:str):
-        '''create a string of logs in order of most recent to oldest'''
+    def _prepend_new_log(self, new_log:str):
+        '''prepend a new log to a list of logs so the order is most recent to oldest'''
         with open(self.log_file, 'r') as f:
             file_logs = f.readlines()
 
