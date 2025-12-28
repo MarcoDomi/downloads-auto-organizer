@@ -49,10 +49,13 @@ class log_manager:
         dt_now = datetime.datetime.now()
         #NOTE by checking most recent records first you can stop searching when you find a 30 day old record and remove all records past that 
         for i in range(len(record_list)):
-            record_dt = self._extract_date_time(record_list[i])
-            if (dt_now - record_dt).days >= 30:
+            dt_record = self._extract_date_time(record_list[i])
+            if (dt_now - dt_record).days >= 30:
                 record_list = record_list[:i] #remove current record and all records after current from list
                 break
+
+        with open(self.log_file, 'w') as f:
+            f.write(record_list)
         
 
     def _extract_date_time(self,record):
@@ -76,6 +79,7 @@ class log_manager:
         move_time12hr = move_datetime.time().strftime("%I:%M %p") #convert time to 12 hour format 
 
         return move_date, move_time12hr
+
 
     def _create_log(self, file_path:Path):
         '''creates a new log using the file path'''
