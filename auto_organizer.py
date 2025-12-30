@@ -53,9 +53,9 @@ class log_manager:
             if (dt_now - dt_move).days >= 30: 
                 record_list = record_list[:i] #remove current record and all records after current from list
                 break
-
+        
         with open(self.log_file, 'w') as f:
-            f.write(record_list)
+            f.write("".join(record_list))
         
 
     def _extract_date_time(self,record):
