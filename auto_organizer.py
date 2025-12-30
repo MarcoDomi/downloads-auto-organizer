@@ -35,16 +35,13 @@ class log_manager:
     def print_log(self):
         '''print log file to console'''
 
-        with open(self.log_file) as f:
-            record_list = f.readlines()
-
+        record_list = self._create_record_list()
         print(*record_list, sep='') #default value of sep adds an extra space before each record so i removed this
 
 
     def delete_old_records(self):
         '''deletes all records from file they are at least 30 days old'''
-        with open(self.log_file) as f:
-            record_list = f.readlines()
+        record_list = self._create_record_list()
 
         dt_now = datetime.datetime.now()
         #NOTE by checking most recent records first you can stop searching when you find a 30 day old record and remove all records past that 
@@ -92,13 +89,20 @@ class log_manager:
 
     def _prepend_new_log(self, new_log:str):
         '''prepend a new log to a list of logs so the order is most recent to oldest'''
-        with open(self.log_file, 'r') as f:
-            file_logs = f.readlines()
+        file_logs = self._create_record_list()
 
         new_log_list = [new_log] #extend method modifies list in place so must store new log in its own variable
         new_log_list.extend(file_logs)
 
         return "".join(new_log_list)
+    
+
+    def _create_record_list(self):
+        '''create a list of records read from file_move_log.txt'''
+        with open(self.log_file, 'r') as f:
+            record_list = f.readlines()
+
+        return record_list
 
 
 logger = log_manager()
