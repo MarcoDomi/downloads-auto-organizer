@@ -34,7 +34,6 @@ class log_manager:
 
     def print_log(self):
         '''print log file to console'''
-
         record_list = self._create_record_list()
         print(*record_list, sep='') #default value of sep adds an extra space before each record so i removed this
 
@@ -63,7 +62,6 @@ class log_manager:
 
         dt_str = f"{date} {time}" 
         
-
         return datetime.datetime.strptime(dt_str, "%Y-%m-%d %I:%M %p") #convert str to datetime object
     
 
@@ -131,10 +129,15 @@ def move_file(file):
         file_suffix = get_file_suffix(file)
 
         if file_suffix in f_extension:
-            type_path = DOWNLOAD_DIR.joinpath(file_type) #create path object for new file type directory
+            
+            type_path = DOWNLOAD_DIR.joinpath(file_type) #create path object using the file
             create_dir(type_path) #create new directory using the file type
-            shutil.move(file, type_path) 
-            logger.write(type_path / file.name) #send updated file path to log_manager write method
+            curr_date_str = str(datetime.date.today())
+            date_path = type_path.joinpath(curr_date_str)
+            create_dir(date_path)
+
+            shutil.move(file, date_path) 
+            logger.write(date_path / file.name) #send updated file path to log_manager write method
 
 
 def main():
