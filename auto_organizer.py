@@ -61,7 +61,7 @@ class log_manager:
         date, time = date_time.split('--')
 
         dt_str = f"{date} {time}" 
-        
+
         return datetime.datetime.strptime(dt_str, "%Y-%m-%d %I:%M %p") #convert str to datetime object
     
 
@@ -80,9 +80,9 @@ class log_manager:
         '''creates a new log using the file path'''
         move_date, move_time = self._get_file_datetime(file_path)
         file_name = file_path.name
-        file_parent = file_path.parent.name
+        type_dir = file_path.parent.parent.name #skip over date-directory to extract file type directory
 
-        return f"[{move_date}--{move_time}] {file_name} moved to {file_parent}\n"
+        return f"[{move_date}--{move_time}] {file_name} moved to {type_dir}\n"
 
 
     def _prepend_new_log(self, new_log:str):
