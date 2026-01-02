@@ -122,6 +122,16 @@ def get_file_suffix(file_path):
 
     return file_name[index:]
 
+def path_setup(file_type):
+    '''create the proper path directories and return a valid path'''
+    type_path = DOWNLOAD_DIR.joinpath(file_type)  # create path object using the file
+    create_dir(type_path)  # create new directory using the file type
+    curr_date_str = str(datetime.date.today())
+    date_path = type_path.joinpath(curr_date_str)
+    create_dir(date_path)
+
+    return date_path
+
 
 def move_file(file): 
     '''move file from parent dir to new dir based on file type'''
@@ -130,12 +140,7 @@ def move_file(file):
 
         if file_suffix in f_extension:
             
-            type_path = DOWNLOAD_DIR.joinpath(file_type) #create path object using the file
-            create_dir(type_path) #create new directory using the file type
-            curr_date_str = str(datetime.date.today())
-            date_path = type_path.joinpath(curr_date_str)
-            create_dir(date_path)
-
+            date_path = path_setup(file_type) 
             shutil.move(file, date_path) 
             logger.write(date_path / file.name) #send updated file path to log_manager write method
 
