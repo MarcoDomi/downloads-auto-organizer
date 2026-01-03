@@ -146,18 +146,25 @@ def move_file(file):
 
 def rm_empty_dirs():
     '''remove any empty directories and sub-directories in downloads'''
-    for dir in DOWNLOAD_DIR.iterdir(): 
-        for sub_dir in dir.iterdir(): #iterate thru sub-directories in dir
-            try:
-                os.rmdir(sub_dir)
-            except OSError:
-                print(f"{sub_dir} is not empty")
-                continue
-            
-        try:
-            os.rmdir(dir)
-        except OSError:
-            print(f"{dir} is not empty")
+    # NOTE using the dict keys to instead of iterdir limits interactions to only directories with a file type name (there could be other directories in downloads dir)
+    file_types = valid_extensions.keys() 
+    dir_list = [DOWNLOAD_DIR.joinpath(dir) for dir in file_types] #create list of paths to file type directories
+
+    for dir in dir_list:
+        if dir.exists():
+            for sub_dir in dir.iterdir():
+                try:
+                    os.rmdir(sub_dir)
+                except OSError:
+                    print(f"{sub_dir} is not empty")
+
+            if len(os.listdir(dir)) == 0: #check if directory is empty
+                os.rmdir(dir)
+            else:
+                print(f"{dir} is not empty")
+        else:
+            print(f"{dir} not found")
+
 
 def main():
     logger.delete_old_records()
