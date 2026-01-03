@@ -147,6 +147,8 @@ def move_file(file):
 def rm_empty_dirs():
     '''remove any empty directories and sub-directories in downloads'''
     for dir in DOWNLOAD_DIR.iterdir(): 
+        if dir not in valid_extensions.keys(): #prevents accidentally removing other directories in downloads that dont have file type name
+            continue
         for sub_dir in dir.iterdir(): #iterate thru sub-directories in dir
             try:
                 os.rmdir(sub_dir)
