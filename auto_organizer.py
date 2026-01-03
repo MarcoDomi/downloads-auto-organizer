@@ -144,22 +144,22 @@ def move_file(file):
             shutil.move(file, date_path) 
             logger.write(date_path / file.name) #send updated file path to log_manager write method
 
+def remove_dir(dir):
+    '''deletes empty directory'''
+    try:
+        os.rmdir(dir)
+    except OSError:
+        print(f"{dir} is not empty")
+
 def cleanup_dirs():
     '''remove any empty directories and sub-directories in downloads'''
     for dir in DOWNLOAD_DIR.iterdir(): 
         if dir.name not in valid_extensions.keys(): #prevents accidentally removing other directories in downloads that dont have file type name
             continue
         for sub_dir in dir.iterdir(): #iterate thru sub-directories in dir
-            try:
-                os.rmdir(sub_dir)
-            except OSError:
-                print(f"{sub_dir} is not empty")
+            remove_dir(sub_dir)
                 
-            
-        try:
-            os.rmdir(dir)
-        except OSError:
-            print(f"{dir} is not empty")
+        remove_dir(dir)
 
 def main():
     logger.delete_old_records()
