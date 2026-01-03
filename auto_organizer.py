@@ -122,7 +122,7 @@ def get_file_suffix(file_path):
 
     return file_name[index:]
 
-def path_setup(file_type):
+def dir_setup(file_type):
     '''create the proper path directories and return a valid path'''
     type_path = DOWNLOAD_DIR.joinpath(file_type)  # create path object using the file
     create_dir(type_path)  # create new directory using the file type
@@ -132,6 +132,9 @@ def path_setup(file_type):
 
     return date_path
 
+def handle_duplicate_file():
+    '''renames '''
+
 
 def move_file(file): 
     '''move file from parent dir to new dir based on file type'''
@@ -139,10 +142,10 @@ def move_file(file):
         file_suffix = get_file_suffix(file)
 
         if file_suffix in f_extension:
-            
-            date_path = path_setup(file_type) 
+            date_path = dir_setup(file_type) 
             shutil.move(file, date_path) 
             logger.write(date_path / file.name) #send updated file path to log_manager write method
+
 
 def remove_dir(dir):
     '''deletes empty directory'''
@@ -169,5 +172,5 @@ def main():
     logger.print_log()
 
 if __name__ == "__main__":
-    #main()
+    main()
     cleanup_dirs()
