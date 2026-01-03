@@ -136,7 +136,7 @@ def handle_duplicate_file():
     '''renames '''
 
 
-def move_file(file): 
+def file_sorter(file): 
     '''move file from parent dir to new dir based on file type'''
     for file_type, f_extension in valid_extensions.items():
         file_suffix = get_file_suffix(file)
@@ -167,7 +167,7 @@ def cleanup_dirs():
 def main():
     logger.delete_old_records()
     for f in DOWNLOAD_DIR.iterdir():
-        move_file(f)
+        file_sorter(f)
 
     logger.print_log()
 
