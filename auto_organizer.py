@@ -132,8 +132,36 @@ def dir_setup(file_type):
 
     return date_path
 
-def handle_duplicate_file():
-    '''renames '''
+
+def rename_duplicate(file, dir_path):
+    '''returns a valid name for duplicate files/directories'''
+
+    period_index = file.find('.')
+    duplicate_num = 1
+    if period_index == -1: #indicates file/directory has no extension
+        str_list = [file, "(", duplicate_num, ")"]
+    else:
+        file_name = file[:period_index]
+        file_extension = file[period_index:]
+        str_list = [file_name, "(", duplicate_num, ")", file_extension]
+
+    duplicate_name = "".join(str_list)
+
+    while not Path(dir_path, duplicate_name).exists():
+        str_list[1] += 1
+        duplicate_name = "".join(str_list)
+
+    return duplicate_name
+
+
+def move_file(file, dir_path):
+    '''moves file to specified directory '''
+    try:
+        shutil.move(file, dir_path)
+    except shutil.Error:
+        print('DUPLICATE FILE')
+        duplicate_file = rename_duplicate(file,dir_path)
+        shutil.move(duplicate_file, dir_path)
 
 
 def file_sorter(file): 
@@ -142,9 +170,9 @@ def file_sorter(file):
         file_suffix = get_file_suffix(file)
 
         if file_suffix in f_extension:
-            date_path = dir_setup(file_type) 
-            shutil.move(file, date_path) 
-            logger.write(date_path / file.name) #send updated file path to log_manager write method
+            datedir_path = dir_setup(file_type) 
+            move_file(file, datedir_path) 
+            logger.write(datedir_path / file.name) #send updated file path to log_manager write method
 
 
 def remove_dir(dir):
@@ -169,8 +197,8 @@ def main():
     for f in DOWNLOAD_DIR.iterdir():
         file_sorter(f)
 
-    logger.print_log()
+    #logger.print_log()
 
 if __name__ == "__main__":
     main()
-    cleanup_dirs()
+    #cleanup_dirs()
