@@ -120,7 +120,12 @@ def get_file_suffix(file_path): #NOTE must account for object with no extensions
     file_name = file_path.name
     index =  file_name.find('.')
 
-    return file_name[index:]
+    if index == -1:
+        extension = ""
+    else:
+        extension = file_name[index:]
+
+    return extension
 
 def dir_setup(file_type):
     '''create the proper path directories and return a valid path'''
@@ -179,6 +184,7 @@ def file_sorter(file:Path):
             datedir_path = dir_setup(file_type) 
             move_file(file, datedir_path) 
             logger.write(datedir_path / file.name) #send updated file path to log_manager write method
+            break
 
 
 def remove_dir(dir):
