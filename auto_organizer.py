@@ -139,7 +139,7 @@ def dir_setup(file_type):
     return date_path
 
 
-def rename_duplicate(file, dir_path):
+def rename_duplicate(file, dst_path):
     '''returns a valid name for duplicate files/directories'''
     file_str = file.name
     period_index = file_str.find(".")
@@ -154,7 +154,7 @@ def rename_duplicate(file, dir_path):
 
     duplicate_name = "".join(str_list)
 
-    while (dir_path / duplicate_name).exists():
+    while (dst_path / duplicate_name).exists():
         duplicate_num += 1
         str_list[2] = str(duplicate_num)
         duplicate_name = "".join(str_list)
@@ -163,16 +163,16 @@ def rename_duplicate(file, dir_path):
     return duplicate_name
 
 
-def move_file(file, dir_path):
+def move_file(file, dst_path):
     '''moves file to specified directory '''
     try:
-        shutil.move(file, dir_path)
+        shutil.move(file, dst_path)
     except shutil.Error:
         print('DUPLICATE FILE')
-        duplicate_name = rename_duplicate(file,dir_path)
+        duplicate_name = rename_duplicate(file,dst_path)
         
         duplicate_file = DOWNLOAD_DIR.joinpath(duplicate_name)
-        shutil.move(duplicate_file, dir_path)
+        shutil.move(duplicate_file, dst_path)
 
 
 def file_sorter(file:Path): 
@@ -181,9 +181,9 @@ def file_sorter(file:Path):
         file_suffix = get_file_suffix(file)
 
         if file_suffix in f_extension:
-            datedir_path = dir_setup(file_type) 
-            move_file(file, datedir_path) 
-            logger.write(datedir_path / file.name) #send updated file path to log_manager write method
+            date_dir_path = dir_setup(file_type) 
+            move_file(file, date_dir_path) 
+            logger.write(date_dir_path / file.name) #send updated file path to log_manager write method
             break
 
 
