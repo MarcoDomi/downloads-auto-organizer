@@ -114,7 +114,7 @@ def create_dir(dir_path):
         print(f"Directory {dir_path} already exists")
 
 
-def get_file_suffix(file_path):
+def get_file_suffix(file_path): #NOTE must account for object with no extensions
     '''return extension of a file'''
     #some file extensions will have 2 dots(example.tar.gz) so using .suffix attribute will not work in those cases
     file_name = file_path.name
@@ -126,6 +126,7 @@ def dir_setup(file_type):
     '''create the proper path directories and return a valid path'''
     type_path = DOWNLOAD_DIR.joinpath(file_type)  # create path object using the file
     create_dir(type_path)  # create new directory using the file type
+
     curr_date_str = str(datetime.date.today())
     date_path = type_path.joinpath(curr_date_str)
     create_dir(date_path)
@@ -135,22 +136,25 @@ def dir_setup(file_type):
 
 def rename_duplicate(file, dir_path):
     '''returns a valid name for duplicate files/directories'''
-
-    period_index = file.find('.')
+    file_str = file.name
+    period_index = file_str.find(".")
     duplicate_num = 1
+    
     if period_index == -1: #indicates file/directory has no extension
-        str_list = [file, "(", duplicate_num, ")"]
+        str_list = [file_str, "(", str(duplicate_num), ")"]
     else:
-        file_name = file[:period_index]
-        file_extension = file[period_index:]
-        str_list = [file_name, "(", duplicate_num, ")", file_extension]
+        file_name = file_str[:period_index]
+        file_extension = file_str[period_index:]
+        str_list = [file_name, "(", str(duplicate_num), ")", file_extension]
 
     duplicate_name = "".join(str_list)
 
-    while not Path(dir_path, duplicate_name).exists():
-        str_list[1] += 1
+    while (dir_path / duplicate_name).exists():
+        duplicate_num += 1
+        str_list[2] = str(duplicate_num)
         duplicate_name = "".join(str_list)
 
+ 
     return duplicate_name
 
 
@@ -160,11 +164,13 @@ def move_file(file, dir_path):
         shutil.move(file, dir_path)
     except shutil.Error:
         print('DUPLICATE FILE')
-        duplicate_file = rename_duplicate(file,dir_path)
+        duplicate_name = rename_duplicate(file,dir_path)
+        
+        duplicate_file = DOWNLOAD_DIR.joinpath(duplicate_name)
         shutil.move(duplicate_file, dir_path)
 
 
-def file_sorter(file): 
+def file_sorter(file:Path): 
     '''move file from parent dir to new dir based on file type'''
     for file_type, f_extension in valid_extensions.items():
         file_suffix = get_file_suffix(file)
