@@ -141,21 +141,23 @@ def dir_setup(file_type):
 
 def rename_duplicate(file:Path, dst_path):
     '''returns a valid name for duplicate files/directories'''
+    
+    #file_sorter() handles the case where a file has no extension so no need to worry about that here
     file_str = file.name
     str_list = file_str.split('.', 1)
 
     duplicate_num = 1
     join_str = f"({str(duplicate_num)})."
     duplicate_name = join_str.join(str_list)
-   
+
     while (dst_path / duplicate_name).exists():
         duplicate_num += 1
-        str_list[2] = str(duplicate_num)
-        duplicate_name = "".join(str_list)
+        join_str = f"({str(duplicate_num)})."
+        duplicate_name = join_str.join(str_list)
 
     duplicate_file = file.parent / duplicate_name
     os.rename(file, duplicate_file)
- 
+
     return duplicate_name
 
 
@@ -164,7 +166,7 @@ def move_file(file, dst_path):
     try:
         shutil.move(file, dst_path)
     except shutil.Error:
-        print('DUPLICATE FILE')
+        print(f'DUPLICATE FILE: {file.name}')
         duplicate_name = rename_duplicate(file,dst_path)
         
         duplicate_file = DOWNLOAD_DIR.joinpath(duplicate_name)
@@ -208,6 +210,5 @@ def main():
     #logger.print_log()
 
 if __name__ == "__main__":
-    #main()
+    main()
     #cleanup_dirs()
-    rename_duplicate(Path('/home/downloads/dog.jpg'), Path('/home/downloads/pics/'))
