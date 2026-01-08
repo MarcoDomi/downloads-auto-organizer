@@ -142,22 +142,19 @@ def dir_setup(file_type):
 def rename_duplicate(file:Path, dst_path):
     '''returns a valid name for duplicate files/directories'''
     file_str = file.name
-    period_index = file_str.find(".")
-    
-    file_name = file_str[:period_index]
-    file_extension = file_str[period_index:]
+    str_list = file_str.split('.', 1)
+
     duplicate_num = 1
-    str_list = [file_name, "(", str(duplicate_num), ")", file_extension]
-
-    duplicate_name = "".join(str_list)
-    duplicate_file = file.parent / duplicate_name
-    os.rename(file, duplicate_file)
-
+    join_str = f"({str(duplicate_num)})."
+    duplicate_name = join_str.join(str_list)
+   
     while (dst_path / duplicate_name).exists():
         duplicate_num += 1
         str_list[2] = str(duplicate_num)
         duplicate_name = "".join(str_list)
 
+    duplicate_file = file.parent / duplicate_name
+    os.rename(file, duplicate_file)
  
     return duplicate_name
 
@@ -211,5 +208,6 @@ def main():
     #logger.print_log()
 
 if __name__ == "__main__":
-    main()
+    #main()
     #cleanup_dirs()
+    rename_duplicate(Path('/home/downloads/dog.jpg'), Path('/home/downloads/pics/'))
