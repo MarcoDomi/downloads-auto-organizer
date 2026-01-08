@@ -139,7 +139,7 @@ def dir_setup(file_type):
     return date_path
 
 
-def rename_duplicate(file, dst_path):
+def rename_duplicate(file:Path, dst_path):
     '''returns a valid name for duplicate files/directories'''
     file_str = file.name
     period_index = file_str.find(".")
@@ -153,6 +153,8 @@ def rename_duplicate(file, dst_path):
         str_list = [file_name, "(", str(duplicate_num), ")", file_extension]
 
     duplicate_name = "".join(str_list)
+    duplicate_file = file.parent / duplicate_name
+    os.rename(file, duplicate_file)
 
     while (dst_path / duplicate_name).exists():
         duplicate_num += 1
