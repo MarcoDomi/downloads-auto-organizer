@@ -143,14 +143,11 @@ def rename_duplicate(file:Path, dst_path):
     '''returns a valid name for duplicate files/directories'''
     file_str = file.name
     period_index = file_str.find(".")
-    duplicate_num = 1
     
-    if period_index == -1: #indicates file/directory has no extension
-        str_list = [file_str, "(", str(duplicate_num), ")"]
-    else:
-        file_name = file_str[:period_index]
-        file_extension = file_str[period_index:]
-        str_list = [file_name, "(", str(duplicate_num), ")", file_extension]
+    file_name = file_str[:period_index]
+    file_extension = file_str[period_index:]
+    duplicate_num = 1
+    str_list = [file_name, "(", str(duplicate_num), ")", file_extension]
 
     duplicate_name = "".join(str_list)
     duplicate_file = file.parent / duplicate_name
