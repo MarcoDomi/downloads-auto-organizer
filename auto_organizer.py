@@ -54,7 +54,7 @@ class log_manager:
             f.write("".join(record_list))
         
 
-    def _extract_date_time(self,record):
+    def _extract_date_time(self,record:str):
         '''extract the date and time portion of a record and return a datetime object'''
         date_time = record.split('] ')[0] #obtain date-time portion of the record 
         date_time = date_time[1:]   #remove '[' from start of date_time
@@ -65,7 +65,7 @@ class log_manager:
         return datetime.datetime.strptime(dt_str, "%Y-%m-%d %I:%M %p") #convert str to datetime object
     
 
-    def _get_file_datetime(self, file_path):
+    def _get_file_datetime(self, file_path:Path):
         '''get a human readable date and time of the last metadata change for a file in a 12-hour format'''
         metadata_timeStamp = os.stat(file_path).st_ctime #timestamp of when the file was moved to different directory
         move_datetime = datetime.datetime.fromtimestamp(metadata_timeStamp) #convert timestamp to human readable format
@@ -106,7 +106,7 @@ class log_manager:
 logger = log_manager()
 
 
-def create_dir(dir_path):
+def create_dir(dir_path:Path):
     '''creates a directory'''
     try:
         dir_path.mkdir()
@@ -114,7 +114,7 @@ def create_dir(dir_path):
         print(f"Directory {dir_path} already exists")
 
 
-def get_file_suffix(file_path): #NOTE must account for object with no extensions
+def get_file_suffix(file_path:Path): #NOTE must account for object with no extensions
     '''return extension of a file'''
     #some file extensions will have 2 dots(example.tar.gz) so using .suffix attribute will not work in those cases
     file_name = file_path.name
@@ -127,7 +127,8 @@ def get_file_suffix(file_path): #NOTE must account for object with no extensions
 
     return extension
 
-def dir_setup(file_type):
+
+def dir_setup(file_type:str):
     '''create the proper path directories and return a valid path'''
     type_path = DOWNLOAD_DIR.joinpath(file_type)  # create path object using the file
     create_dir(type_path)  # create new directory using the file type
@@ -139,7 +140,7 @@ def dir_setup(file_type):
     return date_path
 
 
-def rename_duplicate(file:Path, dst_path):
+def rename_duplicate(file:Path, dst_path:Path):
     '''returns a valid name for duplicate files/directories'''
     
     #file_sorter() handles the case where a file has no extension so no need to worry about that here
@@ -161,7 +162,7 @@ def rename_duplicate(file:Path, dst_path):
     return duplicate_name
 
 
-def move_file(file, dst_path):
+def move_file(file:Path, dst_path:Path):
     '''moves file to specified directory '''
     try:
         shutil.move(file, dst_path)
