@@ -158,6 +158,12 @@ def get_valid_dupl(format_str:str, dst_path:Path):
     
     return duplicate_name
 
+def rename_duplicate(file_path:Path, duplicate_name: str):
+    '''renames the duplicate file within the filesystem'''
+    
+    duplicate_path = file_path.parent / duplicate_name
+    os.rename(file_path, duplicate_path)
+
 
 def duplicate_handler(file:Path, dst_path:Path):
     '''returns a valid name for duplicate files/directories'''
@@ -166,8 +172,7 @@ def duplicate_handler(file:Path, dst_path:Path):
     dupl_format_str = create_format_str(file.name)
     duplicate_name = get_valid_dupl(dupl_format_str, dst_path)
 
-    duplicate_file = file.parent / duplicate_name
-    os.rename(file, duplicate_file)
+    rename_duplicate(file, duplicate_name)
 
     duplicate_path = DOWNLOAD_DIR.joinpath(duplicate_name)
     shutil.move(duplicate_path, dst_path)
