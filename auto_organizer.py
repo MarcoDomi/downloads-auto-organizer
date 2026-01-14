@@ -35,6 +35,7 @@ class log_manager:
     def print_log(self):
         '''print log file to console'''
         record_list = self._create_record_list()
+        record_list.insert(0, self.default_msg)
         print(*record_list, sep='') #default value of sep adds an extra space before each record so i removed this
 
 
