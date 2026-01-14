@@ -139,22 +139,27 @@ def dir_setup(file_type:str):
 
     return date_path
 
-
-def rename_duplicate(file:Path, dst_path:Path):
-    '''returns a valid name for duplicate files/directories'''
+def create_format_str(file_str:str):
+    '''creates and returns format string for duplicate file name'''
     
-    #file_sorter() handles the case where a file has no extension so no need to worry about that here
-    file_str = file.name
     str_list = file_str.split('.', 1)
+    join_str = "({num})." #used to insert values by using .format()
+
+    return join_str.join(str_list)
+
+
+def get_duplicate_name(file:Path, dst_path:Path):
+    '''returns a valid name for duplicate files/directories'''
+
+    # file_sorter() handles the case where a file has no extension so no need to worry about that here
+    dupl_format_str = create_format_str(file.name)
 
     duplicate_num = 1
-    join_str = f"({str(duplicate_num)})."
-    duplicate_name = join_str.join(str_list)
+    duplicate_name = dupl_format_str.format(num=duplicate_num)
 
     while (dst_path / duplicate_name).exists():
         duplicate_num += 1
-        join_str = f"({str(duplicate_num)})."
-        duplicate_name = join_str.join(str_list)
+        duplicate_name = dupl_format_str.format(num=duplicate_num)
 
     duplicate_file = file.parent / duplicate_name
     os.rename(file, duplicate_file)
@@ -168,8 +173,8 @@ def move_file(file:Path, dst_path:Path):
         shutil.move(file, dst_path)
     except shutil.Error:
         print(f'DUPLICATE FILE: {file.name}')
-        duplicate_name = rename_duplicate(file,dst_path)
-        
+        duplicate_name = get_duplicate_name(file, dst_path)
+
         duplicate_file = DOWNLOAD_DIR.joinpath(duplicate_name)
         shutil.move(duplicate_file, dst_path)
 
