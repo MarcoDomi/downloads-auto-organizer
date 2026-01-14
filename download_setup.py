@@ -11,4 +11,4 @@ for f in files:  #repopulate downloads with files
     file_path.touch()
 
 with open('file_move_log.txt', 'w') as f:
-    f.write("**Records will be deleted after 30 days\n")
+    f.write("**Records older than 30 days will be deleted\n")

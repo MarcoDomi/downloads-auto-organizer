@@ -1,1 +1,1 @@
-**Records will be deleted after 30 days
+**Records older than 30 days will be deleted

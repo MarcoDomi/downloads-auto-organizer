@@ -21,15 +21,15 @@ class log_manager:
     def __init__(self):
         self.log_file = 'file_move_log.txt'
         self.curr_date = datetime.date.today()
+        self.default_msg = "**Records older than 30 days will be deleted\n" #this message appears in first line of the log file
 
 
-    def write(self,file_path:Path):
-        '''write to file_move_log.txt when a file was moved to a different directory'''
+    def update_logfile(self,file_path:Path):
+        '''updates log file with new records'''
         new_log = self._create_log(file_path)
         new_log_list = self._prepend_new_log(new_log)
 
-        with open(self.log_file, 'w') as f:
-            f.write(new_log_list) 
+        self._write_to_file(new_log_list) 
 
 
     def print_log(self):
@@ -39,7 +39,7 @@ class log_manager:
 
 
     def delete_old_records(self):
-        '''deletes all records from file they are at least 30 days old'''
+        '''deletes all records from file they are at least 30 days old and updates log file'''
         record_list = self._create_record_list()
 
         dt_now = datetime.datetime.now()
@@ -50,8 +50,16 @@ class log_manager:
                 record_list = record_list[:i] #remove current record and all records after current from list
                 break
         
+        self._write_to_file(record_list)
+
+
+    def _write_to_file(self, record_list:list[str]):
+        '''writes directly to log file'''
+        record_list.insert(0, self.default_msg) #insert default message to start of list
+        record_str = "".join(record_list)
+
         with open(self.log_file, 'w') as f:
-            f.write("".join(record_list))
+            f.write(record_str)
         
 
     def _extract_date_time(self,record:str):
@@ -92,14 +100,15 @@ class log_manager:
         new_log_list = [new_log] #extend method modifies list in place so must store new log in its own variable
         new_log_list.extend(file_logs)
 
-        return "".join(new_log_list)
+        return new_log_list
     
 
     def _create_record_list(self):
         '''create a list of records read from file_move_log.txt'''
         with open(self.log_file, 'r') as f:
-            record_list = f.readlines()
+            fileline_list = f.readlines()
 
+        record_list = fileline_list[1:] #remove the default message from record list
         return record_list
 
 
@@ -201,7 +210,7 @@ def file_sorter(file:Path):
         if file_suffix in f_extension:
             date_dir_path = dir_setup(file_type) 
             move_file(file, date_dir_path) 
-            logger.write(date_dir_path / file.name) #send updated file path to log_manager write method
+            logger.update_logfile(date_dir_path / file.name) #send updated file path to log_manager write method
             break
 
 
@@ -227,8 +236,8 @@ def main():
     for f in DOWNLOAD_DIR.iterdir():
         file_sorter(f)
 
-    #logger.print_log()
+    logger.print_log()
 
 if __name__ == "__main__":
     main()
-    #cleanup_dirs()
+    cleanup_dirs()
