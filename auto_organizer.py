@@ -159,7 +159,7 @@ def get_valid_dupl(format_str:str, dst_path:Path):
     return duplicate_name
 
 
-def get_duplicate_name(file:Path, dst_path:Path):
+def duplicate_handler(file:Path, dst_path:Path):
     '''returns a valid name for duplicate files/directories'''
 
     # file_sorter() handles the case where a file has no extension so no need to worry about that here
@@ -169,7 +169,8 @@ def get_duplicate_name(file:Path, dst_path:Path):
     duplicate_file = file.parent / duplicate_name
     os.rename(file, duplicate_file)
 
-    return duplicate_name
+    duplicate_path = DOWNLOAD_DIR.joinpath(duplicate_name)
+    shutil.move(duplicate_path, dst_path)
 
 
 def move_file(file:Path, dst_path:Path):
@@ -178,10 +179,7 @@ def move_file(file:Path, dst_path:Path):
         shutil.move(file, dst_path)
     except shutil.Error:
         print(f'DUPLICATE FILE: {file.name}')
-        duplicate_name = get_duplicate_name(file, dst_path)
-
-        duplicate_file = DOWNLOAD_DIR.joinpath(duplicate_name)
-        shutil.move(duplicate_file, dst_path)
+        duplicate_handler(file, dst_path)
 
 
 def file_sorter(file:Path): 
