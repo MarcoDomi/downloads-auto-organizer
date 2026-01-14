@@ -6,10 +6,9 @@ download_dir = Path.home() / 'downloads'
 files = ('hi.txt', 'friend.txt', 'funny.mov', 'metallica.mp3','show_ep1.mov','dog.jpg','study.pdf', 'history.tar.gz')
 
 
-
-
 for f in files:  #repopulate downloads with files
     file_path = download_dir / f
     file_path.touch()
 
-open('file_move_log.txt', 'w').close() #clear content in file_move_log.txt
+with open('file_move_log.txt', 'w') as f:
+    f.write("**Records will be deleted after 30 days\n")
