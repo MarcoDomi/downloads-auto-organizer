@@ -164,18 +164,24 @@ def rename_duplicate(file_path:Path, duplicate_name: str):
     duplicate_path = file_path.parent / duplicate_name
     os.rename(file_path, duplicate_path)
 
+def move_duplicate(duplicate_name:str, dst_path:Path):
+    '''move duplicate file to destination path'''
+    duplicate_path = DOWNLOAD_DIR.joinpath(duplicate_name)
+    try:
+        shutil.move(duplicate_path, dst_path)
+    except shutil.Error:
+        print("ERROR: moving duplicate file failed.")
+
 
 def duplicate_handler(file:Path, dst_path:Path):
-    '''returns a valid name for duplicate files/directories'''
+    '''handles various tasks related to duplicate files'''
 
     # file_sorter() handles the case where a file has no extension so no need to worry about that here
     dupl_format_str = create_format_str(file.name)
     duplicate_name = get_valid_dupl(dupl_format_str, dst_path)
 
     rename_duplicate(file, duplicate_name)
-
-    duplicate_path = DOWNLOAD_DIR.joinpath(duplicate_name)
-    shutil.move(duplicate_path, dst_path)
+    move_duplicate(duplicate_name, dst_path)
 
 
 def move_file(file:Path, dst_path:Path):
