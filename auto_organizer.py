@@ -147,19 +147,24 @@ def create_format_str(file_str:str):
 
     return join_str.join(str_list)
 
+def get_valid_dupl(format_str:str, dst_path:Path):
+    '''return a duplicate name that does not exist in destination path'''
+    duplicate_num = 1
+    duplicate_name = format_str.format(num=duplicate_num)
+
+    while (dst_path / duplicate_name).exists():
+        duplicate_num += 1
+        duplicate_name = format_str.format(num=duplicate_num)
+    
+    return duplicate_name
+
 
 def get_duplicate_name(file:Path, dst_path:Path):
     '''returns a valid name for duplicate files/directories'''
 
     # file_sorter() handles the case where a file has no extension so no need to worry about that here
     dupl_format_str = create_format_str(file.name)
-
-    duplicate_num = 1
-    duplicate_name = dupl_format_str.format(num=duplicate_num)
-
-    while (dst_path / duplicate_name).exists():
-        duplicate_num += 1
-        duplicate_name = dupl_format_str.format(num=duplicate_num)
+    duplicate_name = get_valid_dupl(dupl_format_str, dst_path)
 
     duplicate_file = file.parent / duplicate_name
     os.rename(file, duplicate_file)
