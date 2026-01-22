@@ -1,5 +1,6 @@
 #! /usr/bin/python3
 # populates downloads directory with files and removes sub-directories
+# used for testing
 from pathlib import Path
 
 download_dir = Path.home() / 'downloads' 

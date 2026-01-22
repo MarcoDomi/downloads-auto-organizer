@@ -19,7 +19,9 @@ valid_extensions = {
 class log_manager:
     '''manages a log file to track the date-time files were moved'''
     def __init__(self):
-        self.log_file = 'file_move_log.txt'
+        parent_path = Path(__file__).parent 
+        self.log_file = parent_path / 'file_move_log.txt' #must use aboslute path to log file when running this script from different working directory
+
         self.curr_date = datetime.date.today()
         self.default_msg = "**Records older than 30 days will be deleted\n" #this message appears in first line of the log file
 
