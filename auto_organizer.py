@@ -17,7 +17,7 @@ valid_extensions = {
 }
 
 class log_manager:
-    '''manages a log file to track the date-time files were moved'''
+    '''manages a log file to track the date/time a file was moved'''
     def __init__(self):
         parent_path = Path(__file__).parent 
         self.log_file = parent_path / 'file_move_log.txt' #must use aboslute path to log file when running this script from different working directory
@@ -25,6 +25,9 @@ class log_manager:
         self.curr_date = datetime.date.today()
         self.default_msg = "**Records older than 30 days will be deleted\n" #this message appears in first line of the log file
 
+        if not self.log_file.exists():
+            with open(self.log_file, "w") as f:
+                f.write(self.default_msg)
 
     def update_logfile(self,file_path:Path):
         '''updates log file with new records'''
@@ -46,13 +49,13 @@ class log_manager:
         record_list = self._create_record_list()
 
         dt_now = datetime.datetime.now()
-        #NOTE by checking most recent records first you can stop searching when you find a record older than 30 days, remove that record and all records past that 
+        # NOTE by checking most recent records first you can stop searching when you find a record older than 30 days, remove that record and all records past that
         for i in range(len(record_list)):
             dt_move = self._extract_date_time(record_list[i]) #datetime of when the file was moved
             if (dt_now - dt_move).days >= 30: 
                 record_list = record_list[:i] #remove current record and all records after current from list
                 break
-        
+
         self._write_to_file(record_list)
 
 
@@ -63,7 +66,7 @@ class log_manager:
 
         with open(self.log_file, 'w') as f:
             f.write(record_str)
-        
+
 
     def _extract_date_time(self,record:str):
         '''extract the date and time portion of a record and return a datetime object'''
@@ -74,7 +77,7 @@ class log_manager:
         dt_str = f"{date} {time}" 
 
         return datetime.datetime.strptime(dt_str, "%Y-%m-%d %I:%M %p") #convert str to datetime object
-    
+
 
     def _get_file_datetime(self, file_path:Path):
         '''get a human readable date and time of the last metadata change for a file in a 12-hour format'''
