@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 
 DOWNLOAD_DIR = Path.home() / "downloads"
-SORT_TIME = datetime.datetime.now() #date/time the organizer was run. used as timestamp for every file moved
+DT_NOW = datetime.datetime.now() #date/time the organizer was run. used as timestamp for every file moved
 
 # values as sets allow for efficient membership testing
 valid_extensions = {
@@ -47,11 +47,10 @@ class log_manager:
         '''deletes all records from file they are at least 30 days old and updates log file'''
         record_list = self._create_record_list()
 
-        dt_now = datetime.datetime.now()
         # NOTE by checking most recent records first you can stop searching when you find a record older than 30 days, remove that record and all records past that
         for i in range(len(record_list)):
             dt_move = self._extract_date_time(record_list[i]) #datetime of when the file was moved
-            if (dt_now - dt_move).days > 30: 
+            if (DT_NOW - dt_move).days > 30: 
                 record_list = record_list[:i] #remove current record and all records after current from list
                 break
 
@@ -75,24 +74,13 @@ class log_manager:
 
         dt_str = f"{date} {time}" 
 
-        return datetime.datetime.strptime(dt_str, "%Y-%m-%d %I:%M %p") #convert str to datetime object
-
-
-    def _get_file_datetime(self, file_path:Path):
-        '''get a human readable date and time of the last metadata change for a file in a 12-hour format'''
-        metadata_timeStamp = os.stat(file_path).st_ctime #timestamp of when the file was moved to different directory
-        move_datetime = datetime.datetime.fromtimestamp(metadata_timeStamp) #convert timestamp to human readable format
-
-        move_date = move_datetime.date() 
-        move_time12hr = move_datetime.time().strftime("%I:%M %p") #convert time to 12 hour format 
-
-        return move_date, move_time12hr
+        return datetime.datetime.strptime(dt_str, "%Y-%m-%d %H:%M:%S") #convert str to datetime object
 
 
     def _create_log(self, file_path:Path):
         '''creates a new log using the file path'''
-        move_date = SORT_TIME.date()
-        move_time = SORT_TIME.time().strftime("%H:%M:%S")
+        move_date = DT_NOW.date()
+        move_time = DT_NOW.time().strftime("%H:%M:%S")
         file_name = file_path.name
         type_dir = file_path.parent.parent.name #skip over date-directory to extract file type directory
 
@@ -148,7 +136,7 @@ def dir_setup(file_type:str):
     type_path = DOWNLOAD_DIR.joinpath(file_type)  # create path object using the file
     create_dir(type_path)  # create new directory using the file type
 
-    curr_date_str = str(SORT_TIME.date())
+    curr_date_str = str(DT_NOW.date())
     date_path = type_path.joinpath(curr_date_str)
     create_dir(date_path)
 
