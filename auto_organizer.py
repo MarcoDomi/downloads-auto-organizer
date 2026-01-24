@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 
 DOWNLOAD_DIR = Path.home() / "downloads"
+SORT_TIME = datetime.datetime.now() #date/time the organizer was run. used as timestamp for every file moved
 
 # values as sets allow for efficient membership testing
 valid_extensions = {
@@ -21,9 +22,7 @@ class log_manager:
     def __init__(self):
         parent_path = Path(__file__).parent 
         self.log_file = parent_path / 'file_move_log.txt' #must use aboslute path to log file when running this script from different working directory
-
-        self.curr_date = datetime.date.today()
-        self.default_msg = "**Records older than 30 days will be deleted\n" #this message appears in first line of the log file
+        self.default_msg = "**Records older than 30 days will be deleted\n" #this message appears in first line of log file
 
         if not self.log_file.exists():
             with open(self.log_file, "w") as f:
@@ -41,7 +40,7 @@ class log_manager:
         '''print log file to console'''
         record_list = self._create_record_list()
         record_list.insert(0, self.default_msg)
-        print(*record_list, sep='') #default value of sep adds an extra space before each record so i removed this
+        print(*record_list, sep='') #set default value of sep to empty string
 
 
     def delete_old_records(self):
@@ -92,7 +91,8 @@ class log_manager:
 
     def _create_log(self, file_path:Path):
         '''creates a new log using the file path'''
-        move_date, move_time = self._get_file_datetime(file_path)
+        move_date = SORT_TIME.date()
+        move_time = SORT_TIME.time().strftime("%H:%M:%S")
         file_name = file_path.name
         type_dir = file_path.parent.parent.name #skip over date-directory to extract file type directory
 
@@ -148,7 +148,7 @@ def dir_setup(file_type:str):
     type_path = DOWNLOAD_DIR.joinpath(file_type)  # create path object using the file
     create_dir(type_path)  # create new directory using the file type
 
-    curr_date_str = str(datetime.date.today())
+    curr_date_str = str(SORT_TIME.date())
     date_path = type_path.joinpath(curr_date_str)
     create_dir(date_path)
 
