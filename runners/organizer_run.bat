@@ -1,1 +1,0 @@
-@python C:\PythonScripts\downloads-auto-organizer/auto_organizer.py %*
