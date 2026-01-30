@@ -5,7 +5,7 @@ import datetime
 import os
 from pathlib import Path
 
-DOWNLOAD_DIR = Path.home() / "downloads"
+DOWNLOAD_DIR = Path.home() / "downloads" #Windows file paths are generally case-insensitive so this should be ok
 DT_NOW = datetime.datetime.now() #date/time the organizer was run. used as timestamp for every file moved
 
 # values as sets allow for efficient membership testing
